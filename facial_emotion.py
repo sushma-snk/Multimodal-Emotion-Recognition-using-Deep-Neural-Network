@@ -8,7 +8,7 @@ Created on Fri Jun 12 21:32:10 2020
 import pandas as pd
 
 # Describe the data
-data = pd.read_csv("C:/PAC/dissertation/fer2013.csv")
+data = pd.read_csv(".../fer2013.csv")
 
 # Data Sampling and Preprocessing
 print(data.head())
@@ -186,7 +186,7 @@ num_epochs = 25
 #Define fbeta metric instead of accuracy
 from keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau
 
-filepath='C:/PAC/dissertation/FER/Model.{epoch:02d}-{val_acc:.4f}.hdf5'
+filepath='.../FER/Model.{epoch:02d}-{val_acc:.4f}.hdf5'
 checkpointer = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=False, mode='auto')
 reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=10, verbose=0, mode='auto', min_delta=0.0001, cooldown=0, min_lr=0)
 early_stop = EarlyStopping(monitor='val_loss', min_delta=0, patience=0, verbose=0, mode='auto')
@@ -272,19 +272,8 @@ ax = sns.heatmap(cm_normalised, annot=True, linewidths=0, square=False,
 ax.set(xlabel='Predicted label', ylabel='True label')
 
 #Saving the model
-FER1_model_json = model.to_json()
-with open("C:/PAC/dissertation/FER/FER1_model.json","w") as json_file:
-     json_file.write(FER1_model_json)
+FER_model_json = model.to_json()
+with open(".../FER/FER_model.json","w") as json_file:
+     json_file.write(FER_model_json)
 
-model.save('C:/PAC/dissertation/FER/FER1_weights.h5')
-
-
-
-
-
-
-
-
-
-
-
+model.save('.../FER/FER_weights.h5')
