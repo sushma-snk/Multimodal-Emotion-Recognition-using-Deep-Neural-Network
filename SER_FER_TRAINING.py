@@ -5,7 +5,6 @@ Created on Wed Sep  9 17:05:03 2020
 @author: Home-PC
 """
 
-
 import numpy as np
 import pandas as pd
 import os
@@ -43,7 +42,6 @@ y_test = np_utils.to_categorical(lb.fit_transform(y_test))
 x_traincnn = np.expand_dims(x_train, axis=2)
 x_testcnn = np.expand_dims(x_test, axis=2)
 
-
 # tensorflow imports
 import tensorflow as tf
 import keras
@@ -55,7 +53,6 @@ from tensorflow.keras import regularizers
 
 from tensorflow.keras.layers import Dense, Conv1D, Activation, Dropout, Flatten
 from tensorflow.keras.layers import BatchNormalization, Input, MaxPooling1D
-
 
 model = Sequential()
   
@@ -82,8 +79,7 @@ drop3 = model.add(Dropout(0.5))
 
 dense1 = model.add(Dense(256, activation='relu', kernel_regularizer = regularizers.l2(0.01)))
 dense2 = model.add(Dense(7, activation='softmax'))
-  
-  
+
 model.compile(optimizer = 'adam', loss = tf.keras.losses.categorical_crossentropy, metrics = ["accuracy"])
    
 model.summary()
@@ -96,56 +92,50 @@ model_checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(
     mode='max',
     save_best_only=True)
 
-# Model weights are saved at the end of every epoch, if it's the best seen
-# so far.
-
+# Model weights are saved at the end of every epoch, if it's the best seen so far.
 
 model_hist = model.fit(x_traincnn, y_train, epochs = 7500, batch_size = 16, validation_data=(x_testcnn,y_test),shuffle=True,callbacks=[model_checkpoint_callback]) 
 
 model.load_weights(checkpoint_filepath)
 
-#import matplotlib.pyplot as plt
-#
-#plt.plot(model_hist.history['loss'])
-#plt.plot(model_hist.history['val_loss'])
-#plt.title('model loss')
-#plt.ylabel('loss')
-#plt.xlabel('epoch')
-#plt.legend(['train', 'test'], loc='upper left')
-#plt.show()
-#
-#plt.plot(model_hist.history['acc'])
-#plt.plot(model_hist.history['val_acc'])
-#plt.title('model acc')
-#plt.ylabel('acc')
-#plt.xlabel('epoch')
-#plt.legend(['train', 'test'], loc='upper left')
-#plt.show()
-#
-##Confusion Matrix
-#y_pred = model.predict_classes(x_testcnn)
-#y_true = np.asarray([np.argmax(i) for i in y_test])
-#emotion_labels = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
-#
-#from sklearn.metrics import confusion_matrix
-#import seaborn as sns
-#
-#cm = confusion_matrix(y_true, y_pred)
-#cm_normalised = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-#sns.set(font_scale=1.5) 
-#fig, ax = plt.subplots(figsize=(10,10))
-#ax = sns.heatmap(cm_normalised, annot=True, linewidths=0, square=False, 
-#                    cmap="Blues", yticklabels=emotion_labels, xticklabels=emotion_labels, vmin=0, vmax=np.max(cm_normalised), 
-#                    fmt=".2f", annot_kws={"size": 20})
-#ax.set(xlabel='Predicted label', ylabel='True label')
+import matplotlib.pyplot as plt
 
-##Saving the model
-#SER_FER2_model_json = model.to_json()
-#with open("C:/PAC/dissertation/SER_FER_LATEST/Models/SER_FER_bestmodel.json","w") as json_file:
-#     json_file.write(SER_FER2_model_json)
-#
-#model.save('C:/PAC/dissertation/SER_FER_LATEST/Models/SER_FER_bestweights.h5')
+plt.plot(model_hist.history['loss'])
+plt.plot(model_hist.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
 
+plt.plot(model_hist.history['acc'])
+plt.plot(model_hist.history['val_acc'])
+plt.title('model acc')
+plt.ylabel('acc')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
 
+#Confusion Matrix
+y_pred = model.predict_classes(x_testcnn)
+y_true = np.asarray([np.argmax(i) for i in y_test])
+emotion_labels = ["Angry", "Disgust", "Fear", "Happy", "Sad", "Surprise", "Neutral"]
 
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
 
+cm = confusion_matrix(y_true, y_pred)
+cm_normalised = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+sns.set(font_scale=1.5) 
+fig, ax = plt.subplots(figsize=(10,10))
+ax = sns.heatmap(cm_normalised, annot=True, linewidths=0, square=False, 
+                   cmap="Blues", yticklabels=emotion_labels, xticklabels=emotion_labels, vmin=0, vmax=np.max(cm_normalised), 
+                   fmt=".2f", annot_kws={"size": 20})
+ax.set(xlabel='Predicted label', ylabel='True label')
+
+#Saving the model
+SER_FER2_model_json = model.to_json()
+with open("C:/PAC/dissertation/SER_FER_LATEST/Models/SER_FER_bestmodel.json","w") as json_file:
+    json_file.write(SER_FER2_model_json)
+
+model.save('C:/PAC/dissertation/SER_FER_LATEST/Models/SER_FER_bestweights.h5')
